@@ -113,7 +113,7 @@ module.exports.replaceParamsInUrl = function(url, params) {
     for (var prop in params) {
       if (params.hasOwnProperty(prop)) {
         previousUrl = url;
-        re = new RegExp(':'+prop+':', 'i');
+        re = new RegExp('{'+prop+'}', 'i');
         url = url.replace(re, params[prop]);
         // If there is replacement in url, we delete the param. It will not be added to query string.
         if (url !== previousUrl) {

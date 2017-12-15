@@ -271,7 +271,8 @@ Rule.prototype.unique = function (url, params, message) {
   utils.cleanObject(params);
   // There must be an url and params
   if (!utils.isEmpty(url) && !utils.isEmpty(params)) {    
-    // If there is params in url string, they will be replaced. Params in url must have this format :param:.
+    // If there is params in url string, they will be replaced. Params in url must be between curly brackets
+    // Example: api/user/email/{email}.
     url = utils.replaceParamsInUrl(url, params);
     var that = this;
     var promisedMessage = new Promise(function(resolve, reject) {
