@@ -46,6 +46,8 @@ module.exports.isArray = function (arg) {
 module.exports.isEmpty = function (value) {
   if (module.exports.isArray(value)) {
     return !value.length;
+  } else if (module.exports.isObject(value) && Object.keys(value).length === 0) {
+    return true;
   } else if (value === undefined || value === null) {
     return true;
   } else {
@@ -77,6 +79,10 @@ module.exports.isUndefined = function (arg) {
   return typeof arg === 'undefined';
 };
 
+module.exports.isObject = function (arg) {
+  return typeof arg === 'object' || arg instanceof Object;
+}
+
 module.exports.omit = function omit(obj, key) {
   var result = {};
 
@@ -89,10 +95,40 @@ module.exports.omit = function omit(obj, key) {
   return result;
 };
 
-module.exports.httpRequest = function httpRequest(url, params) {
+// Removes empty properties
+module.exports.cleanObject = function (obj) {
+  for (var prop in obj) {
+    if (obj.hasOwnProperty(prop)) {
+      if (module.exports.isEmpty(obj[prop] || "")) {
+        delete obj[prop];
+      }
+    }
+  }
+}
+
+module.exports.replaceParamsInUrl = function(url, params) {
+  if (!module.exports.isEmpty(url) && module.exports.isObject(params)) {
+    var re = null;
+    var previousUrl = '';
+    for (var prop in params) {
+      if (params.hasOwnProperty(prop)) {
+        previousUrl = url;
+        re = new RegExp(':'+prop+':', 'i');
+        url = url.replace(re, params[prop]);
+        // If there is replacement in url, we delete the param. It will not be added to query string.
+        if (url !== previousUrl) {
+          delete params[prop];
+        }
+      }
+    }
+  }
+  return url;
+}
+
+module.exports.httpRequest = function (url, params) {
   var mergedConfig = merge({
     method: 'get',
-    url: url,    
+    url: url,
     params: params
   }, this.httpConfig);
   return axios(mergedConfig)
