@@ -23,6 +23,7 @@ module.exports = {
   digit: 'Must be digit.',
   email: 'Invalid email.',
   url: 'Invalid url.',
+  unique: 'Already exists.',
   optionCombiner: function (options) {
     if (options.length > 2) {
       options = [options.slice(0, options.length - 1).join(', '), options[options.length - 1]];

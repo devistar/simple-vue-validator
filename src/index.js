@@ -35,6 +35,10 @@ function setMode(mode) {
   utils.mode = mode;
 }
 
+function setHttpConfig(config) {
+  utils.httpConfig = config;
+}
+
 if (typeof window !== 'undefined' && window.Vue) {
   window.Vue.use(install);
 }
@@ -50,3 +54,4 @@ module.exports.mixin = mixin;
 module.exports.install = install;
 module.exports.extendTemplates = extendTemplates;
 module.exports.setMode = setMode;
+module.exports.setHttpConfig = setHttpConfig;

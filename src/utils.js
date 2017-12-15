@@ -1,6 +1,8 @@
 'use strict';
 
 var deepEqual = require('deep-equal');
+var merge = require('merge');
+var axios = require('axios');
 
 // This implementation of debounce was taken from the blog of David Walsh.
 // See here: https://davidwalsh.name/javascript-debounce-function
@@ -87,7 +89,17 @@ module.exports.omit = function omit(obj, key) {
   return result;
 };
 
+module.exports.httpRequest = function httpRequest(url, params) {
+  var mergedConfig = merge({
+    method: 'get',
+    url: url,    
+    params: params
+  }, this.httpConfig);
+  return axios(mergedConfig)
+}
+
 module.exports.templates = require('./templates');
 
 module.exports.mode = 'interactive'; // other values: conservative and manual
 
+module.exports.httpConfig = {}; // axios config

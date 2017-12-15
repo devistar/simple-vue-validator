@@ -3,7 +3,7 @@
 var utils = require('./utils');
 
 function Rule(templates) {
-  this._field  = '';
+  this._field = '';
   this._value = undefined;
   this._messages = [];
   if (templates) {
@@ -21,7 +21,7 @@ function Rule(templates) {
 }
 
 Rule.prototype.field = function (field) {
-  this._field  = field;
+  this._field = field;
   return this;
 };
 
@@ -49,7 +49,7 @@ Rule.prototype.custom = function (callback, context) {
   return this;
 };
 
-Rule.prototype._checkValue = function() {
+Rule.prototype._checkValue = function () {
   if (this._value === undefined) {
     throw new Error('Validator.value not set');
   }
@@ -211,8 +211,8 @@ Rule.prototype.in = function (options, message) {
   var value = this._checkValue();
   if (!utils.isEmpty(value)) {
     if (options.filter(function (option) {
-        return option === value;
-      }).length <= 0) {
+      return option === value;
+    }).length <= 0) {
       this._messages.push(message || utils.format(this.templates.in, this.templates.optionCombiner(options)));
     }
   }
@@ -223,8 +223,8 @@ Rule.prototype.notIn = function (options, message) {
   var value = this._checkValue();
   if (!utils.isEmpty(value)) {
     if (options.filter(function (option) {
-        return option !== value;
-      }).length <= 0) {
+      return option !== value;
+    }).length <= 0) {
       this._messages.push(message || utils.format(this.templates.notIn, this.templates.optionCombiner(options)));
     }
   }
@@ -265,6 +265,30 @@ Rule.prototype.email = function (message) {
 Rule.prototype.url = function (message) {
   return this.regex(/(http|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/, message || this.templates.url);
 };
+
+Rule.prototype.unique = function (url, params, message) {
+  if (!utils.isEmpty(url)) {
+    var that = this;
+    var promisedMessage = new Promise(function(resolve, reject) {
+      utils.httpRequest(url, params)
+      .then(function (response) {
+        if ((utils.isArray(response.data) && response.data.length > 0) ||
+          (response.data.exists === true) ||
+          (response.data.exists === 1)) {
+          resolve(message || that.templates.unique);
+        }
+        resolve();
+      })
+      .catch(function(e) {
+        console.error(e.toString());
+        reject(e);
+      })
+    });   
+    that._messages.push(promisedMessage);
+  }
+  return this;
+}
+
 
 module.exports = Rule;
 
