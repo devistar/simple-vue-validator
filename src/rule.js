@@ -268,7 +268,7 @@ Rule.prototype.url = function (message) {
 
 Rule.prototype.unique = function (url, params, message) {
   // Empty params are deleted
-  utils.cleanObject(params);
+  params = utils.cleanObject(params);
   // There must be an url and params
   if (!utils.isEmpty(url) && !utils.isEmpty(params)) {    
     // If there is params in url string, they will be replaced. Params in url must be between curly brackets

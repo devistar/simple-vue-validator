@@ -104,6 +104,7 @@ module.exports.cleanObject = function (obj) {
       }
     }
   }
+  return obj;
 }
 
 module.exports.replaceParamsInUrl = function(url, params) {
