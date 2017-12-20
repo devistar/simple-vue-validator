@@ -22,6 +22,14 @@ function install(Vue, options) {
   }
 }
 
+function addRule(methodName, func) {
+  Rule.prototype[methodName] = func;
+  Validator[methodName] = function () {
+    var rule = new Rule(options.templates);
+    return rule[methodName].apply(rule, arguments);
+  };
+}
+
 function extendTemplates(newTemplates) {
   Object.keys(newTemplates).forEach(function (key) {
     utils.templates[key] = newTemplates[key];
@@ -52,6 +60,7 @@ module.exports.Rule = Rule;
 module.exports.Validator = Validator;
 module.exports.mixin = mixin;
 module.exports.install = install;
+module.exports.addRule = addRule;
 module.exports.extendTemplates = extendTemplates;
 module.exports.setMode = setMode;
 module.exports.setHttpConfig = setHttpConfig;
